@@ -1,10 +1,22 @@
+import { useMutation } from 'react-query'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 
+import * as notis from '../../utils/notifications'
+import { login } from '../../plugins/axios/auth'
+
 export function useLogin() {
+    const {
+        error,
+        isError,
+        isLoading,
+        isSuccess,
+        mutateAsync
+    } = useMutation('login', login)
+
     const initialValues = {
         password: '',
-        email: '',
+        email: ''
     }
 
     const validationSchema = Yup.object({
@@ -15,16 +27,32 @@ export function useLogin() {
         password: Yup
             .string()
             .required('La clave es requerida')
-            .min(5, 'La clave debe tener 5 o más caracteres')
+            .min(6, 'La clave debe tener 6 o más caracteres')
     })
 
-    const onSubmit = values => {
-        console.log(values)
+    const onSubmit = async values => {
+        try {
+            const user = await mutateAsync(values)
+            notis.minimal(`Bienvenido ${user.firstname}!`)
+        } catch (error) {
+            console.log('hook',error)
+            notis.minimal(error.message, notis.types.error)
+        }
     }
 
-    return useFormik({
+    const form = useFormik({
         validationSchema,
         initialValues,
         onSubmit
     })
+
+    return {
+        ...form,
+        request: {
+            error,
+            isError,
+            isLoading,
+            isSuccess
+        }
+    }
 }

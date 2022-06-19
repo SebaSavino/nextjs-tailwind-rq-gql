@@ -16,7 +16,7 @@ export function AuthForm(
     return <div className='flex justify-center mt-5'>
         <div className='bg-gradient-to-t from-gray-300 to-gray-100 w-96 max-w-sm p-5 rounded shadow'>
 
-            <GradientText content='ROUSS' />
+            <GradientText content='RESTAURANTE' />
             <p className='text-center font-semibold'>{page}</p>
 
             <form className='mt-5' onSubmit={handleSudmit}>

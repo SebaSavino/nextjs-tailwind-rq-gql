@@ -4,7 +4,6 @@ import * as Yup from 'yup'
 
 import { register } from '../../plugins/axios/auth'
 import * as notis from '../../utils/notifications'
-import { useAuthStore } from '../../store/auth'
 
 export function useRegister() {
     const {
@@ -14,8 +13,6 @@ export function useRegister() {
         isSuccess,
         mutateAsync
     } = useMutation('register', register)
-
-    const store = useAuthStore()
 
     const initialValues = {
         confirmPassword: '',
@@ -54,10 +51,8 @@ export function useRegister() {
 
     const onSubmit = async values => {
         try {
-            const user = await mutateAsync(values)
+            await mutateAsync(values)
             notis.minimal(`Bienvenido ${values.firstname}!`)
-
-            store.setUser(user)
         } catch (error) {
             console.log('hook',error)
             notis.minimal(error.message, notis.types.error)
